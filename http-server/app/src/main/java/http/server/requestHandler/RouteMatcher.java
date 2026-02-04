@@ -16,7 +16,6 @@ public final class RouteMatcher {
 
         String[] storedPathParts = split(storedPath);
         String[] receivedPathParts = split(receivedPath);
-
         if (storedPathParts.length != receivedPathParts.length) {
             return null;
         }
@@ -34,6 +33,9 @@ public final class RouteMatcher {
                 return null;
             }
         }
+
+
+        System.out.println("params: " + params.toString());
         return params;
     }
 

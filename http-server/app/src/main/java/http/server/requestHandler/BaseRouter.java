@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class BaseRouter implements HttpHandler {
+    private final BodyExtractor bodyExtractor = new BodyExtractor();
     private final MethodRoutes routes = new MethodRoutes();
     protected Controller[] controllers;
 
@@ -31,6 +32,9 @@ public abstract class BaseRouter implements HttpHandler {
             Map<HttpMethod, Handler> routesMap = null;
             Map<String, String> params = null;
 
+
+            System.out.println(routes.toString());
+
             for (var route : routes.entrySet()) {
                 params = RouteMatcher.matchPath(route.getKey(), path);
 
@@ -39,6 +43,7 @@ public abstract class BaseRouter implements HttpHandler {
                     break;
                 }
             }
+
 
             if (routesMap == null) {
                 this.handleNotFound(exchange);
@@ -49,7 +54,8 @@ public abstract class BaseRouter implements HttpHandler {
             Handler handler = routesMap.get(httpMethod);
 
             if (handler != null) {
-                handler.accept(exchange, null);
+                var body = bodyExtractor.extractBody(exchange);
+                handler.accept(exchange, params);
 
                 return;
             }
@@ -85,6 +91,18 @@ public abstract class BaseRouter implements HttpHandler {
 
     public void get(String path, Handler handler) {
         addRoute(HttpMethod.GET, path, handler);
+    }
+
+    public void post(String path, Handler handler) {
+        addRoute(HttpMethod.POST, path, handler);
+    }
+
+    public void patch(String path, Handler handler) {
+        addRoute(HttpMethod.PATCH, path, handler);
+    }
+
+    public void delete(String path, Handler handler) {
+        addRoute(HttpMethod.DELETE, path, handler);
     }
 
     protected void handleMethodNotAllowed(HttpExchange exchange) {
