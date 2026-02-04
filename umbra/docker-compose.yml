@@ -1,0 +1,16 @@
+services:
+  db:
+    container_name: umbra-db
+    image: postgres:latest
+    user: postgres
+    healthcheck:
+      test: 'pg_isready -U postgres --dbname=postgres'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db
+      POSTGRES_PASSWORD: password
