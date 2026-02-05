@@ -2,6 +2,7 @@ package dev.umbra.server.auth;
 
 import dev.umbra.server.auth.dto.LoginRequest;
 import dev.umbra.server.auth.rto.LoginRto;
+import dev.umbra.server.exception.UnauthorizedException;
 import dev.umbra.server.user.User;
 import dev.umbra.server.user.UserRepository;
 import dev.umbra.server.user.UserService;
@@ -33,11 +34,11 @@ public class AuthService {
     public LoginRto login(LoginRequest request) {
         String email = request.email().toLowerCase().trim();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+                .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
 
         var isValidPassword = passwordEncoder.matches(request.password(), user.getPasswordHash());
         if (!isValidPassword) {
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new UnauthorizedException("Invalid credentials");
         }
 
         String token = jwtService.generateToken(user.getId(), user.getEmail());
