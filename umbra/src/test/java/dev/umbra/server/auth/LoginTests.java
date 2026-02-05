@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class LoginTests {
     private final String registerRequest = RegisterUserRequestFactory.init().buildJson();
+
     @Autowired
     MockMvc mockMvc;
 
